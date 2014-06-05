@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Quizz</title>
+
+	<meta name="description" content="Quizz: Timings for various operations on a typical PC on human scale">
+	<meta name="author" content="Karol Kleibl">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="css/reveal.min.css">
+	<link rel="stylesheet" href="css/theme/ace_simple.css" id="theme">
+
+	<!-- For syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+	<script>
+	if( window.location.search.match( /print-pdf/gi ) ) {
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = 'css/print/pdf.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	}
+	</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>Computer timings on human scale</h2>
+					<h1 class="fragment">Quizz</h1>
+					<p class="fragment"><small>Taken from Erik Meijer's talk in "Principles of Reactive programming" at Coursera.org</small></p>
+				</section>
+
+				<section>
+					<h2>Read and send data</h2>
+					<pre><code data-trim class="scala">
+					trait Socket { 
+ def readFromMemory(): Array[Byte] 
+ def sendToEurope(packet: Array[Byte]): Array[Byte] 
+} 
+ 
+val socket = Socket() 
+val packet = socket.readFromMemory() 
+val confirmation = socket.sendToEurope(packet)
+					</code></pre>
+				</section>
+
+				<section>
+					<h3>Approximate timing for various operations on a typical PC</h3>
+					<table>
+						<tr><td>execute typical instruction</td><td>1/1,000,000,000 sec = 1 nanosec</td></tr>
+						<tr><td>fetch from L1 cache memory</td><td>0.5 nanosec</td></tr>
+						<tr><td>branch misprediction</td><td>5 nanosec</td></tr>
+						<tr><td>fetch from L2 cache memory</td><td>7 nanosec</td></tr>
+						<tr><td>Mutex lock/unlock</td><td>25 nanosec</td></tr>
+						<tr><td>fetch from main memory</td><td>100 nanosec </td></tr>
+						<tr><td>send 2K bytes over 1Gbps network</td><td>20,000 nanosec</td></tr>
+						<tr class="fragment highlight-red"><td>read 1MB sequentially from memory</td><td>250,000 nanosec</td></tr>
+						<tr><td>fetch from new disk location (seek)</td><td>8,000,000 nanosec</td></tr>
+						<tr><td>read 1MB sequentially from disk</td><td>20,000,000 nanosec</td></tr>
+						<tr class="fragment highlight-red"><td>send packet US to Europe and back</td><td>150 milliseconds = 150,000,000 nanosec</td></tr>
+					</table>
+
+						<p style="text-align: right"><small><a href="http://norvig.com/21-days.html#answers">&copy; Peter Norvig 2001</a></small></p>
+					</section>
+
+					<section>
+					<h2>Read and send data</h2>
+					<pre><code data-trim class="scala">
+					trait Socket { 
+ def readFromMemory(): Array[Byte] 
+ def sendToEurope(packet: Array[Byte]): Array[Byte] 
+} 
+ 
+val socket = Socket() 
+val packet = socket.readFromMemory() 
+// block for 250,000 ns 
+// only continue if there is no exception
+val confirmation = socket.sendToEurope(packet)
+// block for (more than) 150,000,000 ns
+// only continue if there is no exception
+					</code></pre>
+				</section>
+
+				<section data-background="#007777">
+					<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+					<br/>
+					<p class="bigger-text">1 nanosecond</p>
+					<p class="bigger-text">-></p>
+					<p class="bigger-text">1 second</p>
+					<p class="fragment">(then hours/days/months/years)</p>
+
+				</section>
+
+				<section class="stack" data-background="#4b658e">
+					<section>
+						<h3>Quizz - translate to human scale</h3>
+						<p><small>1 nanosec -> 1 sec</small></p>
+						<table>
+							<tr><td>execute typical instruction</td><td>1 nanosec</td></tr>
+							<tr><td>fetch from L1 cache memory</td><td>0.5 nanosec</td></tr>
+							<tr><td>branch misprediction</td><td>5 nanosec</td></tr>
+							<tr><td>fetch from L2 cache memory</td><td>7 nanosec</td></tr>
+							<tr><td>Mutex lock/unlock</td><td>25 nanosec</td></tr>
+							<tr><td>fetch from main memory</td><td>100 nanosec </td></tr>
+							<tr><td>send 2K bytes over 1Gbps network</td><td>20,000 nanosec</td></tr>
+							<tr><td>read 1MB sequentially from memory</td><td>250,000 nanosec</td></tr>
+							<tr><td>fetch from new disk location (seek)</td><td>8,000,000 nanosec</td></tr>
+							<tr><td>read 1MB sequentially from disk</td><td>20,000,000 nanosec</td></tr>
+							<tr><td>send packet US to Europe and back</td><td>150 milliseconds = 150,000,000 nanosec</td></tr>
+						</table>
+					</section>
+
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>1) Execute typical instruction</h3>
+						<p class="bigger-text">1 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment bigger-text poll-question">1 second</p>
+					</section>
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>2) Fetch from L1 cache memory</h3>
+						<p class="bigger-text">7 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment poll-question" data-fragment-index="1">a) 1 second</p>
+						<p class="fragment poll-question" data-fragment-index="1">b) 17 second</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 7 second</p>
+						<p class="fragment poll-question" data-fragment-index="1">d) 0.7 second</p>
+					</section>
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>3) Send 2K bytes over 1Gbps network</h3>
+						<p class="bigger-text">20,000 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment poll-question" data-fragment-index="1">a) 5.5 hours</p>
+						<p class="fragment poll-question" data-fragment-index="1">b) 18 minutes</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 3 days</p>
+						<p class="fragment poll-question" data-fragment-index="1">d) 1 month</p>
+					</section>
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>4) Read 1MB sequentially from memory</h3>
+						<p class="bigger-text">250,000 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment poll-question" data-fragment-index="1">a) 1.5 year</p>
+						<p class="fragment poll-question" data-fragment-index="1">b) 19 hours</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 3 days</p>
+						<p class="fragment poll-question" data-fragment-index="1">d) 7 weeks</p>
+					</section>
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>5) Fetch from new disk location (seek)</h3>
+						<p class="bigger-text">8,000,000 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment poll-question" data-fragment-index="1">a) 6 days</p>
+						<p class="fragment poll-question" data-fragment-index="1">b) 5 months</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 2 weeks</p>
+						<p class="fragment poll-question" data-fragment-index="1">d) 3 years</p>
+					</section>
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>6) Read 1MB sequentially from disk</h3>
+						<p class="bigger-text">20,000,000 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment poll-question" data-fragment-index="1">a) 27 days</p>
+						<p class="fragment poll-question" data-fragment-index="1">b) 6.5 months</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 9 years</p>
+						<p class="fragment poll-question" data-fragment-index="1">d) 1.5 year</p>
+					</section>
+
+					<section>
+						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
+						<br/>
+						<h3>7) Send packet US to Europe and back</h3>
+						<p class="bigger-text">150 milliseconds = 150,000,000 nanosec</p>
+						<p class="bigger-text">-></p>
+						<p class="fragment poll-question" data-fragment-index="1">a) 5 years</p>
+						<p class="fragment poll-question" data-fragment-index="1">b) 11 months</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 17 years</p>
+						<p class="fragment poll-question" data-fragment-index="1">d) 3 weeks</p>
+					</section>
+				</section>
+			</section>
+
+			<section data-background="#007777">
+					<h1 style="color:#bcb8b8;">And the winner is</h1>
+			</section>
+			
+		
+				<section>
+					<h3>Translation to human scale</h3>
+					<p><small>1 nanosec -> 1 sec</small></p>
+					<table>
+						<tr style="font-weight:bold;"><td>execute typical instruction</td><td>1 nanosec</td><td>1 sec</td></tr>
+						<tr  style="font-weight:bold;"><td>fetch from L1 cache memory</td><td>0.5 nanosec</td><td>0.5 sec</td></tr>
+						<tr style="color:#bdbfc1;"><td>branch misprediction</td><td>5 nanosec</td><td>5 sec</td></tr>
+						<tr style="color:#bdbfc1;"><td>fetch from L2 cache memory</td><td>7 nanosec</td><td>7 sec</td></tr>
+						<tr style="color:#bdbfc1;"><td>Mutex lock/unlock</td><td>25 nanosec</td><td>0.5 min</td></tr>
+						<tr style="color:#bdbfc1;"><td>fetch from main memory</td><td>100 nanosec </td><td>1.5 min</td></tr>
+						<tr style="font-weight:bold;"><td>send 2K bytes over 1Gbps network</td><td>20,000 nanosec</td><td>5.5 hours</td></tr>
+						<tr style="font-weight:bold;"><td>read 1MB sequentially from memory</td><td>250,000 nanosec</td><td>3 days</td></tr>
+						<tr style="font-weight:bold;"><td>fetch from new disk location (seek)</td><td>8,000,000 nanosec</td><td>13 weeks</td></tr>
+						<tr style="font-weight:bold;"><td>read 1MB sequentially from disk</td><td>20,000,000 nanosec</td><td>6.5 months</td></tr>
+						<tr style="font-weight:bold;"><td>send packet US to Europe and back</td><td>150 milliseconds</td><td>5 years</td></tr>
+					</table>
+				</section>
+
+				<section>
+					<h2>Read and send data</h2>
+					<pre><code data-trim class="scala">
+					trait Socket { 
+ def readFromMemory(): Array[Byte] 
+ def sendToEurope(packet: Array[Byte]): Array[Byte] 
+} 
+ 
+val socket = Socket() 
+val packet = socket.readFromMemory() 
+// block for 3 days 
+// only continue if there is no exception
+val confirmation = socket.sendToEurope(packet)
+// block for 5 years
+// only continue if there is no exception
+					</code></pre>
+				</section>
+						
+	<section>
+		<h1>Thank you</h1>
+		<h2>& have a good time</h2>
+		<p>karol.kleibl@asseco-ce.com</p>
+	</section>
+
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+				{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+				{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+				{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+</script>
+
+</body>
+</html>
