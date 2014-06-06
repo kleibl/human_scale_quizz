@@ -141,7 +141,7 @@ val confirmation = socket.sendToEurope(packet)
 					<section>
 						<h2 style="color:#bcb8b8;">Translation to human scale</h2>
 						<br/>
-						<h3>2) Fetch from L1 cache memory</h3>
+						<h3>2) Fetch from L2 cache memory</h3>
 						<p class="bigger-text">7 nanosec</p>
 						<p class="bigger-text">-></p>
 						<p class="fragment poll-question" data-fragment-index="1">a) 1 second</p>
@@ -182,7 +182,7 @@ val confirmation = socket.sendToEurope(packet)
 						<p class="bigger-text">-></p>
 						<p class="fragment poll-question" data-fragment-index="1">a) 6 days</p>
 						<p class="fragment poll-question" data-fragment-index="1">b) 5 months</p>
-						<p class="fragment poll-question" data-fragment-index="1">c) 2 weeks</p>
+						<p class="fragment poll-question" data-fragment-index="1">c) 13 weeks</p>
 						<p class="fragment poll-question" data-fragment-index="1">d) 3 years</p>
 					</section>
 
@@ -218,20 +218,19 @@ val confirmation = socket.sendToEurope(packet)
 			
 		
 				<section>
-					<h3>Translation to human scale</h3>
-					<p><small>1 nanosec -> 1 sec</small></p>
+					<h3>Results</h3>
 					<table>
 						<tr style="font-weight:bold;"><td>execute typical instruction</td><td>1 nanosec</td><td>1 sec</td></tr>
-						<tr  style="font-weight:bold;"><td>fetch from L1 cache memory</td><td>0.5 nanosec</td><td>0.5 sec</td></tr>
+						<tr style="color:#bdbfc1;"><td>fetch from L1 cache memory</td><td>0.5 nanosec</td><td>0.5 sec</td></tr>
 						<tr style="color:#bdbfc1;"><td>branch misprediction</td><td>5 nanosec</td><td>5 sec</td></tr>
-						<tr style="color:#bdbfc1;"><td>fetch from L2 cache memory</td><td>7 nanosec</td><td>7 sec</td></tr>
+						<tr style="font-weight:bold;"><td>fetch from L2 cache memory</td><td>7 nanosec</td><td>c) 7 sec</td></tr>
 						<tr style="color:#bdbfc1;"><td>Mutex lock/unlock</td><td>25 nanosec</td><td>0.5 min</td></tr>
 						<tr style="color:#bdbfc1;"><td>fetch from main memory</td><td>100 nanosec </td><td>1.5 min</td></tr>
-						<tr style="font-weight:bold;"><td>send 2K bytes over 1Gbps network</td><td>20,000 nanosec</td><td>5.5 hours</td></tr>
-						<tr style="font-weight:bold;"><td>read 1MB sequentially from memory</td><td>250,000 nanosec</td><td>3 days</td></tr>
-						<tr style="font-weight:bold;"><td>fetch from new disk location (seek)</td><td>8,000,000 nanosec</td><td>13 weeks</td></tr>
-						<tr style="font-weight:bold;"><td>read 1MB sequentially from disk</td><td>20,000,000 nanosec</td><td>6.5 months</td></tr>
-						<tr style="font-weight:bold;"><td>send packet US to Europe and back</td><td>150 milliseconds</td><td>5 years</td></tr>
+						<tr style="font-weight:bold;"><td>send 2K bytes over 1Gbps network</td><td>20,000 nanosec</td><td>a) 5.5 hours</td></tr>
+						<tr style="font-weight:bold;"><td>read 1MB sequentially from memory</td><td>250,000 nanosec</td><td>c) 3 days</td></tr>
+						<tr style="font-weight:bold;"><td>fetch from new disk location (seek)</td><td>8,000,000 nanosec</td><td>c) 13 weeks</td></tr>
+						<tr style="font-weight:bold;"><td>read 1MB sequentially from disk</td><td>20,000,000 nanosec</td><td>b) 6.5 months</td></tr>
+						<tr style="font-weight:bold;"><td>send packet US to Europe and back</td><td>150 milliseconds</td><td>a) 5 years</td></tr>
 					</table>
 				</section>
 
